@@ -5,7 +5,6 @@ export default function Home() {
   const [roast, setRoast] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Call API to roast resume
   const handleRoast = async () => {
     if (!resumeText.trim()) {
       alert("Please paste your resume text first!");
@@ -29,8 +28,8 @@ export default function Home() {
         setRoast("⚠️ No roast generated. Try again!");
       }
     } catch (err) {
-      console.error(err);
-      setRoast("❌ Error roasting resume.");
+      console.error("Error roasting resume:", err);
+      setRoast("❌ Something went wrong. Please try again.");
     }
 
     setLoading(false);
@@ -40,5 +39,32 @@ export default function Home() {
     <div className="container">
       {/* Header */}
       <h1>🔥 Resume Roast 💀</h1>
-      <p style={{ textAlign: "center", marginBottom: "20px" }}>
-        Upload your resume (or paste text) and let AI destroy it… lovingly
+      <p style={{ marginBottom: "20px" }}>
+        Upload your resume (or paste text) and let AI destroy it… lovingly. 💔
+      </p>
+
+      {/* Paste Resume */}
+      <h2>Paste Your Resume</h2>
+      <textarea
+        placeholder="Paste your resume text here..."
+        value={resumeText}
+        onChange={(e) => setResumeText(e.target.value)}
+      />
+
+      {/* Roast Button */}
+      <button onClick={handleRoast} disabled={loading}>
+        {loading ? "🔥 Roasting..." : "🔥 Roast Me 🔥"}
+      </button>
+
+      {/* Roast Output */}
+      {roast && (
+        <div className="roast-output">
+          <h3>Your Savage Roast:</h3>
+          {roast.split(/(?<=[.!?])\s+/).map((sentence, i) => (
+            <p key={i}>🔥 {sentence}</p>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
