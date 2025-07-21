@@ -1,6 +1,34 @@
 import OpenAI from "openai";
+import { google } from "googleapis";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+async function saveToGoogleSheets(resumeSnippet, roast) {
+  try {
+    const auth = new google.auth.JWT(
+      process.env.GOOGLE_CLIENT_EMAIL,
+      null,
+      process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      ["https://www.googleapis.com/auth/spreadsheets"]
+    );
+
+    const sheets = google.sheets({ version: "v4", auth });
+
+    const now = new Date().toISOString();
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: process.env.GOOGLE_SHEET_ID,
+      range: "Sheet1!A:C",
+      valueInputOption: "USER_ENTERED",
+      requestBody: {
+        values: [[now, resumeSnippet, roast]],
+      },
+    });
+
+    console.log("✅ Saved to Google Sheets");
+  } catch (err) {
+    console.error("❌ Failed to save to Google Sheets:", err);
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
@@ -34,12 +62,16 @@ ${resumeText}`;
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "You roast resumes with wit and sarcasm, always referencing real details from the text." },
+        { role: "system", content: "You roast resumes with wit and sarcasm." },
         { role: "user", content: roastPrompt },
       ],
     });
 
     const roast = completion.choices[0].message.content || "No roast generated.";
+
+    // ✅ Save to Google Sheets
+    await saveToGoogleSheets(resumeText.slice(0, 300), roast);
+
     return res.status(200).json({ roast });
   } catch (err) {
     console.error(err);
