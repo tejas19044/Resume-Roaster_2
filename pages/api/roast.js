@@ -70,7 +70,7 @@ ${resumeText}`;
     const roast = completion.choices[0].message.content || "No roast generated.";
 
     // ✅ Save to Google Sheets
-    await saveToGoogleSheets(resumeText.slice(0, 300), roast);
+    await saveToGoogleSheets(resumeText.slice(0, 49000), roast);
 
     return res.status(200).json({ roast });
   } catch (err) {
