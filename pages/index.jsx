@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import * as pdfjsLib from 'pdfjs-dist';
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs';
 
-// ✅ Required for Next.js builds to work with PDF.js
+// ✅ Correct PDF.js imports for Next.js
+import * as pdfjsLib from 'pdfjs-dist';
+import workerSrc from 'pdfjs-dist/build/pdf.worker.mjs';
+
+// ✅ Required so PDF.js knows where the worker is
 if (typeof window !== 'undefined') {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+  pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 }
 
 export default function Home() {
@@ -12,7 +14,7 @@ export default function Home() {
   const [roast, setRoast] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // ✅ PDF Upload Handler
+  // ✅ Handle PDF Upload
   const handlePDFUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -21,19 +23,20 @@ export default function Home() {
     reader.onload = async function () {
       const typedarray = new Uint8Array(this.result);
       const pdf = await pdfjsLib.getDocument({ data: typedarray }).promise;
-      let text = '';
+
+      let extractedText = '';
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const content = await page.getTextContent();
         const pageText = content.items.map((s) => s.str).join(' ');
-        text += `\n${pageText}`;
+        extractedText += `\n${pageText}`;
       }
-      setResumeText(text.trim());
+      setResumeText(extractedText.trim());
     };
     reader.readAsArrayBuffer(file);
   };
 
-  // ✅ Roast API call
+  // ✅ Call Roast API
   const handleRoast = async () => {
     if (!resumeText.trim()) return;
     setLoading(true);
@@ -47,7 +50,7 @@ export default function Home() {
     setLoading(false);
   };
 
-  // ✅ Structured roast output
+  // ✅ Structure roast output into bullets
   const formatRoast = (text) => {
     const lines = text.split(/\. |\n/).filter(Boolean);
     return lines.map((line, i) => (
@@ -65,7 +68,7 @@ export default function Home() {
           Upload your resume (PDF or text) & let AI destroy it 💔
         </p>
 
-        {/* ✅ File Upload */}
+        {/* ✅ PDF Upload */}
         <div className="mb-4">
           <label className="block font-medium mb-2">Upload PDF Resume:</label>
           <input
@@ -108,4 +111,5 @@ export default function Home() {
     </div>
   );
 }
+
 
