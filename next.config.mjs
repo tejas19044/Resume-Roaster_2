@@ -2,7 +2,7 @@
 const nextConfig = {
   webpack: (config, { isServer }) => {
     if (isServer) {
-      // ✅ Don't bundle googleapis on the client
+      // ✅ Don't bundle googleapis for client build
       config.externals.push("googleapis");
     }
     return config;
