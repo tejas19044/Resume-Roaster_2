@@ -1,63 +1,59 @@
 import { useState } from 'react';
 
 export default function Admin() {
-  const [auth, setAuth] = useState(false);
   const [password, setPassword] = useState('');
-  const [data, setData] = useState([]);
+  const [entries, setEntries] = useState([]);
+  const [authed, setAuthed] = useState(false);
 
   const fetchData = async () => {
-    const res = await fetch('/api/admin?pwd=' + password);
-    const json = await res.json();
-    if (json.success) {
-      setData(json.data);
-      setAuth(true);
+    const res = await fetch('/api/admin-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password })
+    });
+    const data = await res.json();
+    if (data.error) {
+      alert(data.error);
     } else {
-      alert('Wrong password');
+      setEntries(data.entries);
+      setAuthed(true);
     }
   };
 
-  if (!auth) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen">
-        <h2 className="text-xl mb-4">Admin Login</h2>
-        <input
-          type="password"
-          placeholder="Enter password"
-          className="border p-2 mb-2"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button
-          onClick={fetchData}
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Login
-        </button>
-      </div>
-    );
-  }
-
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Admin Dashboard</h1>
-      <table className="table-auto w-full text-left">
-        <thead>
-          <tr>
-            <th className="border px-2 py-1">Timestamp</th>
-            <th className="border px-2 py-1">Resume (snippet)</th>
-            <th className="border px-2 py-1">Roast</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, i) => (
-            <tr key={i}>
-              <td className="border px-2 py-1">{item.timestamp}</td>
-              <td className="border px-2 py-1">{item.text}</td>
-              <td className="border px-2 py-1 whitespace-pre-line">{item.roast}</td>
-            </tr>
+    <div className="p-6 max-w-4xl mx-auto">
+      {!authed ? (
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mb-4">Admin Login</h1>
+          <input
+            type="password"
+            placeholder="Enter Admin Password"
+            className="border p-2 rounded w-64"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            onClick={fetchData}
+            className="ml-3 bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Login
+          </button>
+        </div>
+      ) : (
+        <div>
+          <h1 className="text-3xl font-bold mb-6">Stored Roasts</h1>
+          {entries.length === 0 && <p>No resumes roasted yet 😅</p>}
+          {entries.map((entry, idx) => (
+            <div key={idx} className="mb-6 p-4 border rounded bg-gray-50">
+              <p className="text-sm text-gray-500">{entry.timestamp}</p>
+              <h3 className="font-bold mt-2">Resume (snippet):</h3>
+              <pre className="text-sm whitespace-pre-wrap">{entry.text}</pre>
+              <h3 className="font-bold mt-2">Roast:</h3>
+              <pre className="text-sm whitespace-pre-wrap text-red-600">{entry.roast}</pre>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      )}
     </div>
   );
 }
+
