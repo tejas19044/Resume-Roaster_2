@@ -1,25 +1,44 @@
+import { useState } from "react";
+
 export default function Home() {
+  const [resumeText, setResumeText] = useState("");
+  const [roast, setRoast] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Call API to roast resume
+  const handleRoast = async () => {
+    if (!resumeText.trim()) {
+      alert("Please paste your resume text first!");
+      return;
+    }
+
+    setLoading(true);
+    setRoast("");
+
+    try {
+      const response = await fetch("/api/roast", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resumeText }),
+      });
+
+      const data = await response.json();
+      if (data.roast) {
+        setRoast(data.roast);
+      } else {
+        setRoast("⚠️ No roast generated. Try again!");
+      }
+    } catch (err) {
+      console.error(err);
+      setRoast("❌ Error roasting resume.");
+    }
+
+    setLoading(false);
+  };
+
   return (
     <div className="container">
+      {/* Header */}
       <h1>🔥 Resume Roast 💀</h1>
       <p style={{ textAlign: "center", marginBottom: "20px" }}>
-        Upload your resume (PDF or text) & let AI destroy it 💔
-      </p>
-
-      <h2>Upload PDF Resume</h2>
-      <input type="file" accept="application/pdf" />
-      
-      <h3 style={{ textAlign: "center", margin: "15px 0" }}>Or Paste Resume Text</h3>
-      <textarea placeholder="Paste your resume text here..." />
-
-      <button>🔥 Roast Me 🔥</button>
-
-      {/* Roast Output */}
-      <div className="roast-output">
-        <p><strong>Your Savage Roast:</strong></p>
-        <p>Ah, so you’re the “dynamic leader” who managed to make note-taking sound impressive...</p>
-        <p>Early jobs? A tragic comedy of LinkedIn buzzwords gone wrong...</p>
-      </div>
-    </div>
-  );
-}
+        Upload your resume (or paste text) and let AI destroy it… lovingly
