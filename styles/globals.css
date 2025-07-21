@@ -15,28 +15,39 @@ body {
   padding: 40px 20px;
 }
 
-/* Header */
+/* Container */
+.container {
+  max-width: 650px;
+  width: 100%;
+  background: #fff;
+  padding: 30px;
+  margin: 20px auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+/* Headers */
 h1 {
   font-size: 2.8rem;
-  text-align: center;
   margin-bottom: 10px;
 }
 
 h2 {
-  font-size: 2rem;
-  margin-bottom: 15px;
-  text-align: center;
+  font-size: 1.8rem;
+  margin: 20px 0 10px;
 }
 
-/* Container */
-.container {
-  max-width: 600px;
+/* Textarea */
+textarea {
   width: 100%;
-  background: #fff;
-  padding: 25px;
-  margin: 20px auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  height: 140px;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  resize: vertical;
 }
 
 /* Buttons */
@@ -44,31 +55,21 @@ button {
   background: #ff5722;
   color: #fff;
   border: none;
-  padding: 12px 20px;
+  padding: 14px;
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 15px;
   width: 100%;
+  margin-top: 15px;
 }
 
 button:hover {
   background: #e64a19;
 }
 
-/* File Upload */
-input[type="file"] {
-  margin: 10px 0;
-}
-
-textarea {
-  width: 100%;
-  height: 120px;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
 /* Roast Output */
@@ -79,9 +80,10 @@ textarea {
   border-left: 5px solid #ff5252;
   border-radius: 10px;
   line-height: 1.6;
-  font-size: 1.05rem;
+  text-align: left;
 }
 
-.roast-output p {
+.roast-output h3 {
   margin-bottom: 10px;
+  font-size: 1.3rem;
 }
