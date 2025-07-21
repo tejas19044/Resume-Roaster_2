@@ -19,9 +19,7 @@ export default async function handler(req, res) {
     const rows = result.data.values || [];
     res.status(200).json({ rows });
   } catch (err) {
-    console.error("Failed to read Google Sheets:", err);
+    console.error("❌ Failed to read Google Sheets:", err);
     res.status(500).json({ error: "Could not fetch admin data" });
   }
 }
-
-
