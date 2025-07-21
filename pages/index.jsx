@@ -1,16 +1,18 @@
 import { useState } from 'react';
+import * as pdfjsLib from 'pdfjs-dist';
+import pdfWorker from 'pdfjs-dist/build/pdf.worker.mjs';
 
-// PDF.js loader for client-side PDF text extraction
-import * as pdfjsLib from 'pdfjs-dist/build/pdf';
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.entry';
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+// ✅ Required for Next.js builds to work with PDF.js
+if (typeof window !== 'undefined') {
+  pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+}
 
 export default function Home() {
   const [resumeText, setResumeText] = useState('');
   const [roast, setRoast] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // PDF upload handler
+  // ✅ PDF Upload Handler
   const handlePDFUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -31,7 +33,7 @@ export default function Home() {
     reader.readAsArrayBuffer(file);
   };
 
-  // Roast API call
+  // ✅ Roast API call
   const handleRoast = async () => {
     if (!resumeText.trim()) return;
     setLoading(true);
@@ -45,7 +47,7 @@ export default function Home() {
     setLoading(false);
   };
 
-  // Split roast into structured lines
+  // ✅ Structured roast output
   const formatRoast = (text) => {
     const lines = text.split(/\. |\n/).filter(Boolean);
     return lines.map((line, i) => (
@@ -63,7 +65,7 @@ export default function Home() {
           Upload your resume (PDF or text) & let AI destroy it 💔
         </p>
 
-        {/* File Upload */}
+        {/* ✅ File Upload */}
         <div className="mb-4">
           <label className="block font-medium mb-2">Upload PDF Resume:</label>
           <input
@@ -74,7 +76,7 @@ export default function Home() {
           />
         </div>
 
-        {/* OR paste text */}
+        {/* ✅ OR Paste Text */}
         <div className="mb-4">
           <label className="block font-medium mb-2">Or Paste Resume Text:</label>
           <textarea
@@ -86,7 +88,7 @@ export default function Home() {
           />
         </div>
 
-        {/* Roast Button */}
+        {/* ✅ Roast Button */}
         <button
           onClick={handleRoast}
           disabled={loading}
@@ -95,7 +97,7 @@ export default function Home() {
           {loading ? '🔥 Roasting...' : '🔥 Roast Me 🔥'}
         </button>
 
-        {/* Roast Output */}
+        {/* ✅ Roast Output */}
         {roast && (
           <div className="mt-6 bg-gray-50 border-l-4 border-red-500 p-6 rounded-lg shadow-inner">
             <h2 className="text-2xl font-bold mb-3">Your Savage Roast:</h2>
@@ -106,3 +108,4 @@ export default function Home() {
     </div>
   );
 }
+
