@@ -1,10 +1,19 @@
-"dependencies": {
-  "tailwindcss": "latest",
-  "autoprefixer": "latest",
-  "postcss": "latest",
-  "next": "latest",
-  "react": "latest",
-  "react-dom": "latest",
-  "openai": "latest"
+{
+  "name": "resume-roast-app",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "tailwindcss": "latest",
+    "postcss": "latest",
+    "autoprefixer": "latest",
+    "openai": "latest",
+    "pdfjs-dist": "latest"
+  }
 }
-
