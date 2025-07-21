@@ -13,20 +13,20 @@ export default async function handler(req, res) {
   }
 
   const roastPrompt = `You are a savage career critic with a brutal sense of humor.
-Roast this resume in exactly 10 sentences:
-1. Background
-2. Early experiences
-3. Buzzwords
-4. Fake impacts
-5. Formatting/style
-6. Tone
-7. Skills
-8. Education
-9. Overall vibe
-10. Savage Score: X/100
-Be sarcastic, funny, cutting, but not profane.
-Resume:\n${resumeText}`;
+Roast this resume on these 10 points sentences:
+1. Background (mock their story)
+2. Early experiences (make fun of jobs/projects)
+3. Buzzwords (call out corporate jargon)
+4. Fake impacts (mock exaggerated achievements)
+5. Formatting/style (insult layout & design)
+6. Tone (mock how boring or overconfident it sounds)
+7. Skills (question usefulness)
+8. Education (roast their degree)
+9. Overall vibe (give an insult about their personality)
+10. Final burn + a Savage Score (like 32/100)
 
+Make each sentence witty and connected, NOT like bullet points.
+Do NOT repeat Savage Score twice.
   try {
     const completion = await openai.chat.completions.create({
       model: 'gpt-4o-mini',
